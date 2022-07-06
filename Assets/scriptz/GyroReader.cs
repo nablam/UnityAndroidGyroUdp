@@ -8,57 +8,64 @@ public class GyroReader : MonoBehaviour
     // Start is called before the first frame update
     /********************************************/
     public TMP_Text Qx,Qy,Qz,Qw,Tx,Ty,Tz,Td;
+    Quaternion curRot;
+    public Quaternion cur_U_Rot;
     // The Gyroscope is right-handed.  Unity is left handed.
-    // Make the necessary change to the camera.
+    public GameObject CubeKey;
     void GyroModifyCamera()
     {
-        Input.gyro.enabled = true;
-        transform.rotation = GyroToUnity(Input.gyro.attitude);
+        cur_U_Rot = DeviceGyro.Get();
+        
         //Qx.text = Input.gyro.attitude.x.ToString();
         //Qy.text = Input.gyro.attitude.y.ToString();
         //Qz.text = Input.gyro.attitude.z.ToString();
         //Qw.text = Input.gyro.attitude.w.ToString();
 
-        Qx.text = transform.rotation.x.ToString();
-        Qy.text = transform.rotation.y.ToString();
-        Qz.text = transform.rotation.z.ToString();
-        Qw.text = transform.rotation.w.ToString();
+        Qx.text =cur_U_Rot.x.ToString();
+        Qy.text =cur_U_Rot.y.ToString();
+        Qz.text =cur_U_Rot.z.ToString();
+        Qw.text =cur_U_Rot.w.ToString();
+
+
+        //Debug.Log("qx= " + cur_U_Rot.x.ToString());
     }
 
-    private static Quaternion GyroToUnity(Quaternion q)
-    {
-        return new Quaternion(q.x, q.y, -q.z, -q.w);
-    }
-
-    //private void Update()
+    //private  Quaternion GyroToUnity(Quaternion q)
     //{
-    //    GyroModifyCamera();
+    //    return new Quaternion(q.x, q.y, -q.z, -q.w);
     //}
-    protected void OnGUI()
-    {
-        GUI.skin.label.fontSize = Screen.width / 40;
 
-        GUILayout.Label("Orientation: " + Screen.orientation);
-        GUILayout.Label("input.gyro.attitude: " + Input.gyro.attitude);
-        GUILayout.Label("iphone width/font: " + Screen.width + " : " + GUI.skin.label.fontSize);
-    }
+    //protected void OnGUI()
+    //{
+    //    GUI.skin.label.fontSize = Screen.width / 40;
+
+    //    GUILayout.Label("Orientation: " + Screen.orientation);
+    //    GUILayout.Label("input.gyro.attitude: " + Input.gyro.attitude);
+    //    GUILayout.Label("iphone width/font: " + Screen.width + " : " + GUI.skin.label.fontSize);
+    //}
     private void Awake()
     {
-        Input.gyro.enabled = true;
+       
     }
     void Start()
     {
-        StartCoroutine(doinitin());
-    }
-    IEnumerator doinitin() {
-        yield return new WaitForSeconds(2);
-        StartCoroutine(InitializeGyro());
-    }
-    IEnumerator InitializeGyro()
-    {
         Input.gyro.enabled = true;
-        yield return null;
-        //Debug.Log(Input.gyro.attitude); // attitude has data now
-        GyroModifyCamera();
+       // StartCoroutine(doinitin());
     }
+    private void Update()
+    {
+        GyroModifyCamera();
+        CubeKey.transform.rotation = cur_U_Rot;
+    }
+    //IEnumerator doinitin() {
+    //    yield return new WaitForSeconds(2);
+    //    StartCoroutine(InitializeGyro());
+    //}
+    //IEnumerator InitializeGyro()
+    //{
+    //    Input.gyro.enabled = true;
+    //    yield return null;
+    //    //Debug.Log(Input.gyro.attitude); // attitude has data now
+    //    GyroModifyCamera();
+    //}
 }
